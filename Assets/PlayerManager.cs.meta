@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 16acf27a2926f8442a61be769d65759a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - loveCard: {fileID: 6596343069043350340, guid: b75b40d72eabf594ea7e0c7427696bae, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
