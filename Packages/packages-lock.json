@@ -79,6 +79,12 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.git": {
+      "version": "file:C:/JOINTS/STUPID_CUPIDS/Other Assets/com.unity.git-2.1.28-preview.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
     "com.unity.ide.rider": {
       "version": "2.0.7",
       "depth": 0,
