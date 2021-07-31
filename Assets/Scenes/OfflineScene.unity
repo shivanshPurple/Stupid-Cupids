@@ -291,7 +291,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1254464979}
         m_TargetAssemblyTypeName: CustomRoomManager, Assembly-CSharp
-        m_MethodName: Host
+        m_MethodName: Server
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -973,7 +973,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Host
+  m_Text: Start Server
 --- !u!222 &1918919085
 CanvasRenderer:
   m_ObjectHideFlags: 0

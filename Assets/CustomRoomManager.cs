@@ -2,9 +2,9 @@ using Mirror;
 using UnityEngine;
 public class CustomRoomManager : NetworkRoomManager
 {
-    public void Host()
+    public void Server()
     {
-        StartHost();
+        StartServer();
     }
 
     public void Client()
