@@ -490,8 +490,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1254464978
-RectTransform:
+--- !u!4 &1254464978
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -504,11 +504,6 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 593.5, y: 502.5}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1254464979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,8 +521,6 @@ MonoBehaviour:
   runInBackground: 1
   autoStartServerBuild: 1
   serverTickRate: 30
-  serverBatching: 1
-  serverBatchInterval: 0
   offlineScene: Assets/Scenes/OfflineScene.unity
   onlineScene: Assets/Scenes/RoomScene.unity
   transport: {fileID: 1254464980}
