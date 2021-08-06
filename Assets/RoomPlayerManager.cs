@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using System;
 
 public class RoomPlayerManager : NetworkRoomPlayer
 {
@@ -9,18 +10,29 @@ public class RoomPlayerManager : NetworkRoomPlayer
     public string playerName;
     [SyncVar(hook = nameof(hookChar))]
     public int charIndex = 1;
+    [SyncVar]
+    public bool isHost = false;
     [SerializeField]
     private Text text;
     [SerializeField]
     private SpriteRenderer charSprite;
     [SerializeField]
     private SpriteRenderer readySprite;
-    public override void OnStartClient()
+    public override void OnClientEnterRoom()
     {
-        base.OnStartClient();
+        base.OnClientEnterRoom();
         gameObject.name = "RoomPlayer" + index;
-        readySprite.enabled = false;
-        transform.position = new Vector3(3.5f, 2 - 0.5f * (GameObject.FindGameObjectsWithTag("RoomPlayer").Length - 1));
+        GameObject[] roomPlayers = GameObject.FindGameObjectsWithTag("RoomPlayer");
+        for (int i = 0; i < roomPlayers.Length; i++)
+            roomPlayers[i].transform.position = new Vector3(3.5f, 2 - 1.5f * i);
+        CmdRegisterRoomHost();
+    }
+
+    [Command]
+    private void CmdRegisterRoomHost()
+    {
+        if (NetworkManager.singleton.numPlayers == 1)
+            isHost = true;
     }
 
     [Command]
@@ -46,6 +58,6 @@ public class RoomPlayerManager : NetworkRoomPlayer
 
     public override void ReadyStateChanged(bool oldReadyState, bool newReadyState)
     {
-        readySprite.enabled = false;
+        readySprite.enabled = newReadyState;
     }
 }

@@ -19,12 +19,15 @@ public class GameManager : NetworkBehaviour
     [SyncVar(hook = nameof(changeDater))]
     public uint datingId = 99;
 
-    void Start()
+    void Awake()
     {
         if (singleton == null)
             singleton = this;
         else if (singleton != this)
             Destroy(gameObject);
+    }
+    void Start()
+    {
         players.Callback += playersListCallback;
     }
     void playersListCallback(SyncList<uint>.Operation op, int index, uint oldItem, uint newItem)
@@ -43,17 +46,6 @@ public class GameManager : NetworkBehaviour
     {
         players.Add(id);
     }
-    internal void registerHost(uint netId)
-    {
-        if (NetworkClient.localPlayer.netId == netId)
-            startRoundBtn.gameObject.SetActive(true);
-    }
-    public void onStartBtnPressed()
-    {
-        round = GameRound.GetNext(round);
-        currRoundName = round.name;
-        CmdStartRound();
-    }
     private void hookGameEvent(string oldEvent, string newEvent)
     {
         StartCoroutine(OnNewRound(newEvent));
@@ -64,13 +56,15 @@ public class GameManager : NetworkBehaviour
         turnId = 99;
         yield return new WaitForSeconds(1);
         yield return new WaitUntil(() => BoardManager.singleton.mode == BoardManager.playMode.blank);
-        if (NetworkClient.localPlayer.isServer && NetworkClient.localPlayer.isLocalPlayer)
+        if (NetworkClient.localPlayer.gameObject.GetComponent<PlayerManager>().isHost)
             CmdEndTurn();
     }
 
     [Command(requiresAuthority = false)]
     public void CmdStartRound()
     {
+        round = GameRound.GetNext(round);
+        currRoundName = round.name;
         if (round != GameRound.Dating)
         {
             // sets the next dater according to the previous one
@@ -86,7 +80,7 @@ public class GameManager : NetworkBehaviour
             set = utils.getSetOfRandomNumbers(round.availableCards.Length, round.inHandLimit * players.Count);
             for (int i = 0; i < playerManagers.Count; i++)
             {
-                if (!playerManagers[i].isDating)
+                if (players[i] != datingId)
                 {
                     List<string> tempStrings = new List<string>();
                     List<int> thisPlayerCardIndexes = set.GetRange(i * round.inHandLimit, round.inHandLimit);
@@ -123,7 +117,7 @@ public class GameManager : NetworkBehaviour
                 OnRoundEnded();
                 return;
             }
-            if (playerManagers[nextTurnIndex].isDating)
+            if (players[nextTurnIndex] == datingId)
                 nextTurnIndex = getNextIndex(players[nextTurnIndex]);
             if (nextTurnIndex == 99)
             {
@@ -161,12 +155,12 @@ public class GameManager : NetworkBehaviour
     private void OnRoundEnded()
     {
         turnId = 99;
-        startRoundBtn.interactable = true;
-        startRoundBtn.GetComponentInChildren<Text>().text = "Start " + GameRound.GetNext(round).name;
-        if (round == GameRound.Dating)
+        foreach (PlayerManager p in playerManagers)
         {
-            foreach (PlayerManager p in playerManagers)
+            if (round == GameRound.Dating)
                 p.potManager.resetPot();
+            if (p.isHost)
+                p.OnRoundEnded(p.connectionToClient, GameRound.GetNext(round).name);
         }
     }
 
@@ -215,7 +209,7 @@ public class GameManager : NetworkBehaviour
         ++index;
         if (index >= players.Count)
             return getNextNonDaterIndex(-1);
-        if (playerManagers[index].isDating)
+        if (players[index] == datingId)
             return getNextNonDaterIndex(index);
         else
             return index;

@@ -2,6 +2,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
+using System;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -15,6 +16,9 @@ public class PlayerManager : NetworkBehaviour
     internal PotManager potManager;
     [SyncVar]
     public bool isDating;
+    [SyncVar]
+    public bool isHost;
+
     private void SetChar(int oldIndex, int newIndex)
     {
         transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Characters/Asset " + newIndex);
@@ -29,11 +33,14 @@ public class PlayerManager : NetworkBehaviour
         potManager = GetComponent<PotManager>();
         endTurnBtn = GameObject.FindGameObjectWithTag("EndTurnButton").GetComponent<Button>();
         if (isLocalPlayer)
-        {
             GameManager.singleton.CmdNotifyServer(netId);
-            if (isServer)
-                GameManager.singleton.registerHost(netId);
-        }
+        if (isServer && isHost)
+            makeHost(connectionToClient);
+    }
+    [TargetRpc]
+    internal void makeHost(NetworkConnection connection)
+    {
+        GameManager.singleton.startRoundBtn.gameObject.SetActive(true);
     }
     [TargetRpc]
     internal void newHand(NetworkConnection connection, List<string> newList, bool isPerk)
@@ -60,8 +67,8 @@ public class PlayerManager : NetworkBehaviour
             }
             else
                 inHandCardStack?.showCards(isTurn);
+            endTurnBtn.interactable = isTurn;
         }
-        endTurnBtn.interactable = isTurn;
     }
 
     [TargetRpc]
@@ -73,5 +80,13 @@ public class PlayerManager : NetworkBehaviour
     internal void enableEndTurnButton(NetworkConnection target, bool interactable)
     {
         endTurnBtn.interactable = interactable;
+    }
+
+    [TargetRpc]
+    internal void OnRoundEnded(NetworkConnection connectionToClient, string nextGameRound)
+    {
+        GameManager gm = GameManager.singleton;
+        gm.startRoundBtn.interactable = true;
+        gm.startRoundBtn.GetComponentInChildren<Text>().text = "Start " + nextGameRound;
     }
 }

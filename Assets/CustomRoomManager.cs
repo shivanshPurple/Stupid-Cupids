@@ -16,7 +16,8 @@ public class CustomRoomManager : NetworkRoomManager
     {
         gamePlayer.GetComponent<PlayerManager>().playerName = roomPlayer.GetComponent<RoomPlayerManager>().playerName;
         gamePlayer.GetComponent<PlayerManager>().charIndex = roomPlayer.GetComponent<RoomPlayerManager>().charIndex;
-        Destroy(roomPlayer);
+        gamePlayer.GetComponent<PlayerManager>().isHost = roomPlayer.GetComponent<RoomPlayerManager>().isHost;
+        NetworkServer.Destroy(roomPlayer);
         return base.OnRoomServerSceneLoadedForPlayer(conn, roomPlayer, gamePlayer);
     }
 
