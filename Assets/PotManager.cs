@@ -115,6 +115,7 @@ public class PotManager : NetworkBehaviour
     void date()
     {
         points++;
+        print(GameManager.singleton);
         GameManager.singleton.dateIsChosen();
     }
 

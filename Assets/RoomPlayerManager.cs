@@ -18,14 +18,16 @@ public class RoomPlayerManager : NetworkRoomPlayer
     private SpriteRenderer charSprite;
     [SerializeField]
     private SpriteRenderer readySprite;
-    public override void OnClientEnterRoom()
+
+    public override void OnStartClient()
     {
-        base.OnClientEnterRoom();
+        base.OnStartClient();
         gameObject.name = "RoomPlayer" + index;
         GameObject[] roomPlayers = GameObject.FindGameObjectsWithTag("RoomPlayer");
         for (int i = 0; i < roomPlayers.Length; i++)
             roomPlayers[i].transform.position = new Vector3(3.5f, 2 - 1.5f * i);
-        CmdRegisterRoomHost();
+        if (isLocalPlayer)
+            CmdRegisterRoomHost();
     }
 
     [Command]

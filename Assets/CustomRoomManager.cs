@@ -23,7 +23,7 @@ public class CustomRoomManager : NetworkRoomManager
 
     public override void OnServerDisconnect(NetworkConnection conn)
     {
-        StopHost();
+        StopServer();
     }
 }
 

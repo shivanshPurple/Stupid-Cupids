@@ -29,6 +29,9 @@ public class GameManager : NetworkBehaviour
     void Start()
     {
         players.Callback += playersListCallback;
+        GameObject[] roomPlayers = GameObject.FindGameObjectsWithTag("RoomPlayer");
+        foreach (GameObject rp in roomPlayers)
+            Destroy(rp);
     }
     void playersListCallback(SyncList<uint>.Operation op, int index, uint oldItem, uint newItem)
     {
@@ -143,7 +146,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [Command(requiresAuthority = false)]
     public void dateIsChosen()
     {
         foreach (PlayerManager p in playerManagers)
